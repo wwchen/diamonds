@@ -90,7 +90,7 @@ def get_yadav(**kwargs):
         '&price_min=9000'
         '&price_ui_max=%24+14000'
         '&price_ui_min=9000'
-        '&results=200'
+        '&results=500'
         '&search_waiting=0'
         '&shape-checkbox='
         '&shape=RB'
@@ -157,9 +157,9 @@ def scrape_yadav(outdir,pause=2):
             lab_id = re.search(r'[0-9]{10}', cert_url).group(0)
             diamonds.append(diamond(shape, carat, color, clarity, cut, depth, table, lab, lab_id, price, url, img, cert_url, vid_url, now))
     now = datetime.datetime.now()
-    today = now.strftime('%m-%d-%Y')
+    today = now.strftime('%s') # %m-%d-%Y
 
-    f = os.path.join(outdir,'yadav-{}.csv'.format(today))
+    f = os.path.join(outdir + '/yadav','{}.csv'.format(today))
     data = pd.DataFrame(diamonds, columns=diamond._fields)
     data.to_csv(f, mode='w', header=True, sep='\t')
 
