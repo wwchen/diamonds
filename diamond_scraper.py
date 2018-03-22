@@ -312,7 +312,7 @@ def grouplen(sequence, chunk_size):
 def main():
     #scrape_jamesallen(os.getcwd())
     #scrape_bluenile(os.getcwd())
-    #scrape_yadav(os.getcwd())
+    scrape_yadav(os.getcwd())
     scrape_bbucutting(os.getcwd())
 
 if __name__== "__main__":

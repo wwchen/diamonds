@@ -21,7 +21,7 @@ def main():
 	print('comparing {} with {}'.format(filenames[1], filenames[0]))
 
 	filtered = curr[~curr.lab_id.isin(prev.lab_id)]
-	if empty(filtered):
+	if len(filtered) == 0:
 		print('no changes since last file')
 		return
 
@@ -61,6 +61,21 @@ def main():
 
 	for i in os.listdir(gia_dir):
 		os.remove(gia_dir + i)
+
+	#######
+
+	root_dir = os.getcwd() + '/bbucutting/'
+	filenames = os.listdir(root_dir)
+	filenames.sort(reverse=True)
+
+	prev = pd.read_csv(root_dir + filenames[1], sep='\t')
+	curr = pd.read_csv(root_dir + filenames[0], sep='\t')
+
+	print('comparing {} with {}'.format(filenames[1], filenames[0]))
+
+	filtered = curr[~curr.lab_id.isin(prev.lab_id)]
+	f = open('bbucutting-filtered.csv', 'w')
+	filtered.to_csv(f, mode='w', header=False, sep='\t')
 
 def extract_gia_ids(list):
 	return map(lambda m: m[:10], filter(lambda n: len(n[:10]) == 10 and n[:10].isdigit(), list))
