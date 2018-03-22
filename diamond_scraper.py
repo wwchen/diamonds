@@ -158,7 +158,6 @@ def scrape_yadav(outdir,pause=2):
             diamonds.append(diamond(shape, carat, color, clarity, cut, depth, table, lab, lab_id, price, url, img, cert_url, vid_url, now))
     now = datetime.datetime.now()
     today = now.strftime('%s') # %m-%d-%Y
-
     f = os.path.join(outdir + '/yadav','{}.csv'.format(today))
     data = pd.DataFrame(diamonds, columns=diamond._fields)
     data.to_csv(f, mode='w', header=True, sep='\t')
@@ -257,10 +256,64 @@ def scrape_bluenile(outdir,pageSize=500,startIndex=0,pause=3):
         print "Retrived {i} of {count}".format(**locals())
         time.sleep(pause)
 
+def scrape_bbucutting(outdir):
+    url = ('http://bbucutting.com/search_results.asp'
+        '?ref='
+        '&ShowAll=1'
+        '&shape=B'
+        '&size_from=1.5'
+        '&size_to=1.8'
+        '&color_from=G'
+        '&color_to=H'
+        '&clar_from=SI1'
+        '&clar_to=SI1'
+        '&price_from='
+        '&price_to='
+        '&meas_from='
+        '&meas_to='
+        '&ratio_from='
+        '&ratio_to='
+        )
+    content = http.request('get', url, headers={'cookie': '__cfduid=d4c23d66474a2d4a9ae1010a4e8c166f81521605727; ASPSESSIONIDCCBQQTQB=OGMBBNOAMAOLDIIELOAJMMME; ASPSESSIONIDACDRTSRA=LPJLIMABMCIDPPADACKAMPFH; ASPSESSIONIDACBSRTRA=NKJPJPHBNHNJGPHDJKOLBKPJ; __utmc=213632199; __utmz=213632199.1521685821.1.1.utmccn=(direct)|utmcsr=(direct)|utmcmd=(none); ASPSESSIONIDCABSRSRB=FOBBPGJBFFCHIHNPOGOLGDOF; uid=6592; __utma=213632199.720543568.1521685821.1521692610.1521698054.3; __utmb=213632199'})
+    html = BeautifulSoup(content.data, 'html.parser')
+    # cols = map(lambda x: x.text.strip(), html.find_all('td'))
+    # rows = grouplen(cols[1:], 20)
+    # now = datetime.datetime.now()
+    # diamonds = map(lambda x: diamond(x[4], x[6], x[7], x[8], x[15], x[8], x[9], x[3], x[2], x[18], None, None, None, None, now), rows)
+
+    rows = grouplen(html.find_all('td')[1:], 20)
+    now = datetime.datetime.now()
+    diamonds = []
+    (u'', u'5192057841', u'', u'GIA', u'ROUND', u'1.58', u'G', u'SI1', u'60.6', u'58', u'MD-STK', u'N', u'EX', u'EX', u'MB', u'EX', u'7.50*7.53*4.56', u'', u'$10,056.70', u'-33')
+    for row in rows:
+        lab_id     = row[1].text.strip()
+        lab        = row[3].text.strip()
+        shape      = row[4].text.strip()
+        carat      = row[5].text.strip()
+        color      = row[6].text.strip()
+        clarity    = row[7].text.strip()
+        depth      = row[8].text.strip()
+        table      = row[9].text.strip()
+        cut        = row[15].text.strip()
+        price      = row[18].text.strip()
+        url        = 'http://bbucutting.com/{}'.format(row[2].find('a')['href'])
+        img        = None
+        cert_url   = None
+        vid_url    = None
+        diamonds.append(diamond(shape, carat, color, clarity, cut, depth, table, lab, lab_id, price, url, img, cert_url, vid_url, now))
+    today = now.strftime('%s') # %m-%d-%Y
+    f = os.path.join(outdir + '/bbucutting','{}.csv'.format(today))
+    data = pd.DataFrame(diamonds, columns=diamond._fields)
+    data.to_csv(f, mode='w', header=True, sep='\t')
+
+def grouplen(sequence, chunk_size):
+    return list(zip(*[iter(sequence)] * chunk_size))
+
 def main():
     #scrape_jamesallen(os.getcwd())
     #scrape_bluenile(os.getcwd())
-    scrape_yadav(os.getcwd())
+    #scrape_yadav(os.getcwd())
+    scrape_bbucutting(os.getcwd())
 
 if __name__== "__main__":
     main()

@@ -21,6 +21,10 @@ def main():
 	print('comparing {} with {}'.format(filenames[1], filenames[0]))
 
 	filtered = curr[~curr.lab_id.isin(prev.lab_id)]
+	if empty(filtered):
+		print('no changes since last file')
+		return
+
 	for idx, row in filtered.iterrows():
 		url = row.cert_url
 		path = gia_dir + os.path.basename(url)
