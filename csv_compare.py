@@ -31,6 +31,8 @@ def filter_rows_by_remained_downloads(tmp_dir, dataframe, url_colname, key_colna
 	fstruct = lambda p: re.search('(.*)\.(.+)$', os.path.basename(p)).groups()
 	for idx, row in dataframe.iterrows():
 		url, key = row[url_colname], row[key_colname]
+		if pd.isnull(url):
+			continue
 		path = '{}{}.{}'.format(tmp_dir, key, fstruct(url)[1])
 		if not os.path.exists(path):
 			print('downloading {} to {}'.format(url, path))
@@ -57,8 +59,8 @@ def main():
 		print('no changes since last file')
 		return
 
-	filtered = filter_rows_by_remained_downloads(gia_dir, filtered, 'cert_url', 'lab_id')
 	filtered = filter_rows_by_remained_downloads(gia_dir, filtered, 'img_url', 'lab_id')
+	filtered = filter_rows_by_remained_downloads(gia_dir, filtered, 'cert_url', 'lab_id')
 
 	f = open('yadav-filtered.csv', 'w')
 	filtered.to_csv(f, mode='w', header=False, sep='\t')
