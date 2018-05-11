@@ -3,3 +3,5 @@ videos/*.png
 videos/*.jpg
 videos/*.mp4
 *.swp
+*-filtered.csv
+*.pyc
